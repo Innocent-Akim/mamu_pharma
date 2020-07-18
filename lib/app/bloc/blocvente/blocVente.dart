@@ -9,6 +9,7 @@ class BlocVente extends Bloc<EventVente, StateVente> {
   StateVente get initialState => StateVenteInit();
   @override
   Stream<StateVente> mapEventToState(EventVente event) async* {
+    yield StateVenteInit();
     if (event is EventVenteLoaded) {
       yield StateVenteLoading();
 

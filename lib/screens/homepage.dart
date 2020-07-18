@@ -5,18 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mamusoft/app/bloc/blocStock/blockStock.dart';
+import 'package:mamusoft/app/bloc/blocStock/eventStock.dart';
+import 'package:mamusoft/app/bloc/blocStock/stateStock.dart';
 import 'package:mamusoft/app/bloc/blocvente/blocVente.dart';
 import 'package:mamusoft/app/bloc/blocvente/eventVente.dart';
 import 'package:mamusoft/app/bloc/blocvente/stateVente.dart';
 import 'package:mamusoft/app/source/data_api_provider.dart';
+import 'package:mamusoft/screens/detailStock.dart';
 import 'package:mamusoft/screens/identite.dart';
 import 'package:mamusoft/util/app_theme.dart';
+import 'package:mamusoft/util/constante.dart';
 import 'package:mamusoft/util/design_course_app_theme.dart';
 import 'package:mamusoft/util/hotel_app_theme.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MyHomePage extends StatefulWidget {
+  final quantite;
+  final entreprise;
+
+  const MyHomePage({Key key, this.quantite, this.entreprise}) : super(key: key);
   @override
   _MyHomePage createState() => _MyHomePage();
 }
@@ -24,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePage extends State<MyHomePage> {
   ProgressDialog dialogueProgress;
   BlocVente _blocVente;
+  BlocStock _blocStock;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -33,13 +43,15 @@ class _MyHomePage extends State<MyHomePage> {
   DateTime dateSelect;
   DateTime dateSelec;
   bool isdate = false;
-  // final globalKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
+    _blocStock = BlocStock();
     _blocVente = BlocVente();
-    _blocVente.add(
-        EventVenteLoaded(entreprise: "0001-KMGA", limit: perpage.toString()));
+    _blocStock.add(EventStockerFetch(entreprise: widget.entreprise));
+    _blocVente.add(EventVenteLoaded(
+        entreprise: widget.entreprise, limit: perpage.toString()));
   }
 
   final _identifier = MyIdentite();
@@ -206,7 +218,7 @@ class _MyHomePage extends State<MyHomePage> {
                                             await Future.delayed(
                                                 Duration(microseconds: 1000));
                                             _blocVente.add(EventVenteLoaded(
-                                                entreprise: "0001-KMGA",
+                                                entreprise: widget.entreprise,
                                                 limit: '10'));
                                             _refreshController
                                                 .refreshCompleted();
@@ -292,13 +304,64 @@ class _MyHomePage extends State<MyHomePage> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: <Widget>[
-                                                  customDashbord(
-                                                      icon: Icons
-                                                          .collections_bookmark,
-                                                      color: Color(0xFF86B8E9),
-                                                      nombre: '210',
-                                                      name:
-                                                          'Produit disponibles'),
+                                                  BlocBuilder(
+                                                    bloc: _blocStock,
+                                                    builder: (context, state) {
+                                                      if (state
+                                                          is StateStockInit) {
+                                                        return Center(
+                                                          child: SpinKitCircle(
+                                                            color: Colors
+                                                                .lightBlue,
+                                                            size: 50,
+                                                          ),
+                                                        );
+                                                      }
+                                                      if (state
+                                                          is StateStockerFetch) {
+                                                        return state
+                                                                    .data[0]
+                                                                    .quantite
+                                                                    .length >
+                                                                0
+                                                            ? customDashbord(
+                                                                icon: Icons
+                                                                    .collections_bookmark,
+                                                                color: Color(
+                                                                    0xFF86B8E9),
+                                                                nombre:
+                                                                    "${state.data[0].quantite}",
+                                                                name:
+                                                                    'Quantite disponibles',
+                                                                onTap: () {
+                                                                  FocusScope.of(
+                                                                          context)
+                                                                      .requestFocus(
+                                                                          FocusNode());
+                                                                  Navigator.push<
+                                                                      dynamic>(
+                                                                    context,
+                                                                    MaterialPageRoute<
+                                                                            dynamic>(
+                                                                        builder:
+                                                                            (BuildContext context) =>
+                                                                                DetailStock(),
+                                                                        fullscreenDialog:
+                                                                            true),
+                                                                  );
+                                                                })
+                                                            : customDashbord(
+                                                                icon: Icons
+                                                                    .warning,
+                                                                color: Color(
+                                                                    0xFFEE7979),
+                                                                nombre:
+                                                                    "${0.0}",
+                                                                name:
+                                                                    'Quantite disponibles');
+                                                      }
+                                                    },
+                                                  ),
                                                   customDashbord(
                                                       color: Color(0x94F7737A),
                                                       icon: Icons.pie_chart,

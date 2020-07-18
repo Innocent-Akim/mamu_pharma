@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:ffi';
+import 'package:mamusoft/app/model/stockModel.dart';
 import 'package:mamusoft/app/model/venteModel.dart';
 import 'package:http/http.dart' as http;
 
@@ -37,12 +37,18 @@ class Dataprovider {
     return null;
   }
 
-  Future<String> sumQuantite({String entreprise}) async {
-    final repose = await http
-        .post("$path", body: {'action': 'SUM_QTE', 'entreprise': entreprise});
-    resultat = await jsonDecode(repose.body);
-    if (resultat != null) {
-      return resultat;
+  Future<List<ModelStock>> sumQuantite({String entreprise}) async {
+    try {
+      List<ModelStock> vente = List();
+      final repose = await http
+          .post("$path", body: {'action': 'SUM_QTE', 'entreprise': entreprise});
+      resultat = await json.decode(repose.body);
+      if (!resultat.isEmpty) {
+        vente.add(ModelStock.fromJson(resultat[0]));
+      }
+      return vente;
+    } catch (_) {
+      print(_.toString());
     }
     return null;
   }

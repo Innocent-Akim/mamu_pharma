@@ -10,10 +10,10 @@ class ModelStock {
 ModelStock _$FromJson(Map<String, dynamic> json) {
   return ModelStock(
       quantite: json['quantite'].toString(),
-      entreprise: json['entreprise'].toString());
+      entreprise: json['idEntreprise'].toString());
 }
 
 Map<String, dynamic> _$ToJson(ModelStock stock) => <String, dynamic>{
       'quantite': stock.quantite,
-      'entreprise': stock.entreprise
+      'idEntreprise': stock.entreprise
     };

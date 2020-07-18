@@ -52,7 +52,7 @@ dependencies:
   connectivity: ^0.4.8+2
   shimmer: ^1.1.1
   # flutter_skeleton: ^0.1.0+1
-  # date_picker_timeline: ^1.2.0
+  date_picker_timeline: ^1.2.0
   # flutter_rounded_date_picker: ^1.0.4
   # flutter_cupertino_date_picker: 1.0.26+2
 dev_dependencies:

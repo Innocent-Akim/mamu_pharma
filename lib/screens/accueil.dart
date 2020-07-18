@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mamusoft/screens/homepage.dart';
+import 'package:mamusoft/util/constante.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 class Accueil extends StatefulWidget {
@@ -78,7 +79,11 @@ class _Accueil extends State<Accueil> {
                               dialogueProgress.hide().whenComplete(
                                   () => Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
-                                            builder: (context) => MyHomePage()),
+                                            builder: (context) => MyHomePage(
+                                                  quantite: Constants
+                                                      .instance.quantite,
+                                                  entreprise: "0001-KMGA",
+                                                )),
                                       )));
 
                           // Navigator.of(context).pushAndRemoveUntil(
