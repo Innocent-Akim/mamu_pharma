@@ -17,6 +17,15 @@ class BlocFiche extends Bloc<EventFiche, StateFiche> {
         List<ModelRapport> fiche = await Repository.getInstance()
             .fetchFiche(date: event.date, entreprise: event.entreprise);
         yield SteteFicheLoaded(fiche: fiche);
+      } else if (event is EventFicheonChanged) {
+        yield StateFicheLoading();
+        List<ModelRapport> search =
+            await Repository.getInstance().onChangedFiche(
+          search: event.valeur,
+          entreprise: event.entreprise,
+          date: event.date,
+        );
+        yield SteteFicheLoaded(fiche: search);
       }
     } catch (_) {
       print(_.toString());

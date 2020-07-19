@@ -72,6 +72,24 @@ class Dataprovider {
     }
     return fiche;
   }
+
+  Future<List<ModelRapport>> onChangeFicheStock(
+      {String search, String entreprise, String date}) async {
+    List<ModelRapport> fiche = List();
+    try {
+      final reponse = await http.post("${path}", body: {
+        'action': 'FICHE_SEARCH',
+        'recherche': search,
+        'entreprise': entreprise,
+        'date': date
+      });
+      resultat = await json.decode(reponse.body);
+      for (int index = 0; index < resultat.length; index++) {
+        fiche.add(ModelRapport.fromJson(resultat[index]));
+      }
+    } catch (_) {}
+    return fiche;
+  }
 }
 
 enum init { action, loadingVenteM }

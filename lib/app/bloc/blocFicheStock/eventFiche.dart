@@ -9,3 +9,11 @@ class EventFicheFetch extends EventFiche {
   @override
   List<Object> get props => [];
 }
+
+class EventFicheonChanged extends EventFiche {
+  final valeur;
+  final entreprise;
+  final date;
+  EventFicheonChanged({this.valeur, this.entreprise, this.date});
+  List<Object> get props => [valeur, entreprise, date];
+}

@@ -20,13 +20,14 @@ class _DetailStock extends State<DetailStock> {
   DatePickerController controller;
   ScrollController _scrollController;
   bool visib = false;
+  bool search = true;
   BlocFiche _blocFiche;
   int compteur = 0;
   int year = DateTime.now().year - 20;
   int moth = DateTime.now().month;
   int day = DateTime.now().month;
   String dateTime = "2019-01-01 00:00:00.000";
-
+  TextEditingController controlleSearcher = TextEditingController();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   void initState() {
@@ -68,14 +69,29 @@ class _DetailStock extends State<DetailStock> {
               Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Container(
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  height: 45,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.black12.withOpacity(.1)),
                   child: TextFormField(
+                    controller: controlleSearcher,
                     decoration: InputDecoration(
-                        labelText: "Recherche...",
                         border: InputBorder.none,
-                        icon: Icon(Icons.search),
-                        hintText: "Cesaderme poudre"),
+                        prefixIcon: Icon(
+                          search ? Icons.search : Icons.close,
+                          color: Colors.black,
+                          size: 12,
+                        ),
+                        hintText: "Recherche..."),
+                    onChanged: (val) {
+                      setState(() {
+                        search = !search;
+                        _blocFiche.add(EventFicheonChanged(
+                            valeur: val,
+                            entreprise: widget.entreprise,
+                            date: widget.date));
+                      });
+                    },
                   ),
                 ),
               ),

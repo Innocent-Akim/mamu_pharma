@@ -22,4 +22,8 @@ class Repository {
   Future<List<ModelRapport>> fetchFiche({String date, String entreprise}) =>
       Dataprovider.getInstance()
           .fetchFicheStock(date: date, entreprise: entreprise);
+  Future<List<ModelRapport>> onChangedFiche(
+          {String search, String entreprise, String date}) =>
+      Dataprovider.getInstance()
+          .onChangeFicheStock(search: search, entreprise: entreprise, date: date);
 }
