@@ -1,3 +1,4 @@
+import 'package:mamusoft/app/model/rapport_stock.dart';
 import 'package:mamusoft/app/model/stockModel.dart';
 import 'package:mamusoft/app/model/venteModel.dart';
 import 'package:mamusoft/app/source/data_api_provider.dart';
@@ -17,4 +18,8 @@ class Repository {
 
   Future<List<ModelStock>> getQte({String entreprise}) =>
       Dataprovider.getInstance().sumQuantite(entreprise: entreprise);
+
+  Future<List<ModelRapport>> fetchFiche({String date, String entreprise}) =>
+      Dataprovider.getInstance()
+          .fetchFicheStock(date: date, entreprise: entreprise);
 }

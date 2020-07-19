@@ -127,12 +127,14 @@ class _Accueil extends State<Accueil> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Text("MAMU-SOFT",
-                              style: TextStyle(color: Colors.grey)),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 11)),
                           Text("Version 1.0.0",
-                              style: TextStyle(color: Colors.grey)),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 11)),
                           Text(
                             "Build by Databank RDC",
-                            style: TextStyle(color: Colors.grey),
+                            style: TextStyle(color: Colors.black, fontSize: 11),
                           ),
                         ],
                       ),

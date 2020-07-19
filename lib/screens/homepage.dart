@@ -313,8 +313,17 @@ class _MyHomePage extends State<MyHomePage> {
                                                           child: SpinKitCircle(
                                                             color: Colors
                                                                 .lightBlue,
-                                                            size: 50,
+                                                            size: 20,
                                                           ),
+                                                        );
+                                                      }
+                                                      if (state
+                                                          is StateStockerLoading) {
+                                                        return Center(
+                                                          child: SpinKitCircle(
+                                                              color: Colors
+                                                                  .lightBlue,
+                                                              size: 20),
                                                         );
                                                       }
                                                       if (state
@@ -343,9 +352,12 @@ class _MyHomePage extends State<MyHomePage> {
                                                                     context,
                                                                     MaterialPageRoute<
                                                                             dynamic>(
-                                                                        builder:
-                                                                            (BuildContext context) =>
-                                                                                DetailStock(),
+                                                                        builder: (BuildContext
+                                                                                context) =>
+                                                                            DetailStock(
+                                                                              date: '2019-06-03',
+                                                                              entreprise: widget.entreprise,
+                                                                            ),
                                                                         fullscreenDialog:
                                                                             true),
                                                                   );

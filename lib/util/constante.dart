@@ -13,6 +13,12 @@ class Constants {
     return _constants;
   }
 
+  static String capitalize({String val}) {
+    return val.substring(0, 1) +
+        "" +
+        (val.toLowerCase()).substring(1, val.length);
+  }
+
   static Future<bool> connectionState() async {
     bool isbool = false;
     try {

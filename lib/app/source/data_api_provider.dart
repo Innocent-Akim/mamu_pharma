@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:mamusoft/app/model/rapport_stock.dart';
 import 'package:mamusoft/app/model/stockModel.dart';
 import 'package:mamusoft/app/model/venteModel.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,7 @@ class Dataprovider {
   static Dataprovider _instance;
   static bool isERROR = false;
   var resultat;
-  static const path = "http://192.168.1.126:8081/solution/app/home/app.php";
+  static const path = "http://192.168.43.34:8081/solution/app/home/app.php";
   static Dataprovider getInstance() {
     if (_instance == null) {
       _instance = Dataprovider();
@@ -52,8 +53,26 @@ class Dataprovider {
     }
     return null;
   }
-}
 
-//chronogeologie quantite
+  Future<List<ModelRapport>> fetchFicheStock(
+      {String date, String entreprise}) async {
+    List<ModelRapport> fiche = List();
+    try {
+      final reponse = await http.post("${path}", body: {
+        'action': 'FICHE_STOCK_MOB',
+        'date': date,
+        'entreprise': entreprise,
+      });
+      resultat = await json.decode(reponse.body);
+      print("++++++++++++++++++++${resultat}");
+      for (int index = 0; index < resultat.length; index++) {
+        fiche.add(ModelRapport.fromJson(resultat[index]));
+      }
+    } catch (_) {
+      print("===========" + _.toString());
+    }
+    return fiche;
+  }
+}
 
 enum init { action, loadingVenteM }
