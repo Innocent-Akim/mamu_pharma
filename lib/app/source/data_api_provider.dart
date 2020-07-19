@@ -61,10 +61,9 @@ class Dataprovider {
       final reponse = await http.post("${path}", body: {
         'action': 'FICHE_STOCK_MOB',
         'date': date,
-        'entreprise': entreprise,
+        'entreprise': entreprise
       });
       resultat = await json.decode(reponse.body);
-      print("++++++++++++++++++++${resultat}");
       for (int index = 0; index < resultat.length; index++) {
         fiche.add(ModelRapport.fromJson(resultat[index]));
       }

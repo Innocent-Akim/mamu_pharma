@@ -62,9 +62,22 @@ class _DetailStock extends State<DetailStock> {
                     _blocFiche.add(EventFicheFetch(
                         date: date.toString().substring(0, 10),
                         entreprise: widget.entreprise));
-                    print("${date.toString()}");
                   });
                 }),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Container(
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                        labelText: "Recherche...",
+                        border: InputBorder.none,
+                        icon: Icon(Icons.search),
+                        hintText: "Cesaderme poudre"),
+                  ),
+                ),
               ),
               Expanded(
                 child: SmartRefresher(
@@ -144,7 +157,7 @@ class _DetailStock extends State<DetailStock> {
         Material(
           color: Colors.white,
           elevation: 0.0,
-          child: DatePicker(DateTime.parse(dateTime),
+          child: DatePicker(DateTime.now(),
               controller: controller,
               locale: 'fr_FR',
               initialSelectedDate: DateTime.now(),
