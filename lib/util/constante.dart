@@ -20,17 +20,14 @@ class Constants {
   }
 
   static Future<bool> connectionState() async {
-    bool isbool = false;
     try {
       final resultat = await InternetAddress.lookup("http://www.google.com");
       if (resultat.isNotEmpty && resultat[0].rawAddress.isNotEmpty) {
-        isbool = true;
-      } else {
-        isbool = false;
+        return true;
       }
     } on SocketException catch (_) {
-      isbool = false;
+      return false;
     }
-    return isbool;
+    return false;
   }
 }

@@ -550,9 +550,9 @@ class _MyHomePage extends State<MyHomePage> {
                                               onRefresh: () async {
                                                 await Future.delayed(Duration(
                                                     microseconds: 1000));
-                                                // _blocVente.add(EventVenteLoaded(
-                                                //     entreprise: "0001-KMGA",
-                                                //     limit: '5'));
+                                                _blocVente.add(EventVenteLoaded(
+                                                    entreprise: "0001-KMGA",
+                                                    limit: '5'));
 
                                                 _refreshController
                                                     .refreshCompleted();
@@ -616,35 +616,18 @@ class _MyHomePage extends State<MyHomePage> {
                                                                           padding: const EdgeInsets.only(
                                                                               top: 4.0,
                                                                               bottom: 4.0),
-                                                                          child:
-                                                                              Dismissible(
-                                                                            key:
-                                                                                Key(state.data[index].date),
-                                                                            background:
-                                                                                Icon(Icons.add_alert),
-                                                                            dragStartBehavior:
-                                                                                DragStartBehavior.start,
-                                                                            secondaryBackground:
-                                                                                Icon(Icons.vertical_align_bottom),
-                                                                            movementDuration:
-                                                                                Duration(seconds: 3),
-                                                                            onDismissed:
-                                                                                (direction) {
-                                                                              print("${state.data[index].date}");
-                                                                            },
-                                                                            child: getDetail(
-                                                                                onClick: () {
-                                                                                  print("${state.data[index].montant}");
-                                                                                },
-                                                                                ico: Icons.vertical_align_bottom,
-                                                                                montant: '${state.data[index].montant}',
-                                                                                payer: '${state.data[index].apayer}',
-                                                                                devise: 'USD',
-                                                                                dette: '${state.data[index].dette}',
-                                                                                date: '${state.data[index].date}',
-                                                                                color: Colors.red,
-                                                                                colo: Colors.redAccent),
-                                                                          ),
+                                                                          child: getDetail(
+                                                                              onClick: () {
+                                                                                print("${state.data[index].montant}");
+                                                                              },
+                                                                              ico: Icons.vertical_align_bottom,
+                                                                              montant: '${state.data[index].montant}',
+                                                                              payer: '${state.data[index].apayer}',
+                                                                              devise: 'USD',
+                                                                              dette: '${state.data[index].dette}',
+                                                                              date: '${state.data[index].date}',
+                                                                              color: Colors.red,
+                                                                              colo: Colors.redAccent),
                                                                         );
                                                                       },
                                                                     );

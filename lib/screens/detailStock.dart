@@ -83,9 +83,13 @@ class _DetailStock extends State<DetailStock> {
                           size: 12,
                         ),
                         hintText: "Recherche..."),
-                    onChanged: (val) {
+                    onTap: () {
                       setState(() {
                         search = !search;
+                      });
+                    },
+                    onChanged: (val) {
+                      setState(() {
                         _blocFiche.add(EventFicheonChanged(
                             valeur: val,
                             entreprise: widget.entreprise,
@@ -93,6 +97,17 @@ class _DetailStock extends State<DetailStock> {
                       });
                     },
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      "Elements trouves... ${compteur}",
+                      style: TextStyle(fontSize: 10, color: Colors.black12),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
@@ -127,8 +142,10 @@ class _DetailStock extends State<DetailStock> {
                         );
                       }
                       if (state is SteteFicheLoaded) {
+                        compteur = state.fiche.length;
                         return ListView.builder(
                           shrinkWrap: false,
+                          controller: _scrollController,
                           physics: ScrollPhysics(),
                           itemCount: state.fiche.length,
                           itemBuilder: (context, index) {

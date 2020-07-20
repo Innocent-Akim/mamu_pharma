@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamusoft/screens/accueil.dart';
+import 'package:mamusoft/gui/alert_internet.dart';
+import 'package:mamusoft/util/constante.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
