@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:mamusoft/gui/alert_internet.dart';
 import 'package:mamusoft/screens/homepage.dart';
 import 'package:mamusoft/util/constante.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -12,6 +15,22 @@ class Accueil extends StatefulWidget {
 class _Accueil extends State<Accueil> {
   bool isprogress = false;
   ProgressDialog dialogueProgress;
+
+  bool isOffline = false;
+  bool connect = false;
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    await Constants.getInstance().connectionState().then((value) {
+      connect = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     dialogueProgress = ProgressDialog(context);
@@ -75,15 +94,18 @@ class _Accueil extends State<Accueil> {
                                 color: Colors.white)),
                         onPressed: () {
                           dialogueProgress.show();
-                          Future.delayed(Duration(seconds: 3)).then((value) =>
+
+                          Future.delayed(Duration(seconds: 5)).then((value) =>
                               dialogueProgress.hide().whenComplete(
                                   () => Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
-                                            builder: (context) => MyHomePage(
-                                                  quantite: Constants
-                                                      .instance.quantite,
-                                                  entreprise: "0001-KMGA",
-                                                )),
+                                            builder: (context) => !connect
+                                                ? AlertInternet()
+                                                : MyHomePage(
+                                                    quantite: Constants
+                                                        .instance.quantite,
+                                                    entreprise: "0001-KMGA",
+                                                  )),
                                       )));
 
                           // Navigator.of(context).pushAndRemoveUntil(

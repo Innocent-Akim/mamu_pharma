@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:mamusoft/app/model/rapport_stock.dart';
 import 'package:mamusoft/app/model/stockModel.dart';
 import 'package:mamusoft/app/model/venteModel.dart';
 
 class Constants {
   static ModelStock instance = ModelStock();
   static ModelVente caiiseInstance = ModelVente();
+  static ModelRapport fiche = ModelRapport();
   static Constants _constants;
   static Constants getInstance() {
     if (_constants == null) {
@@ -19,13 +21,14 @@ class Constants {
         (val.toLowerCase()).substring(1, val.length);
   }
 
-  static Future<bool> connectionState() async {
+  Future<bool> connectionState() async {
     try {
-      final resultat = await InternetAddress.lookup("http://www.google.com");
+      final resultat = await InternetAddress.lookup("www.google.com");
       if (resultat.isNotEmpty && resultat[0].rawAddress.isNotEmpty) {
         return true;
       }
     } on SocketException catch (_) {
+      print(_.toString());
       return false;
     }
     return false;
