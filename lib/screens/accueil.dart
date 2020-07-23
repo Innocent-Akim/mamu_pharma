@@ -8,6 +8,7 @@ import 'package:mamusoft/util/constante.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 class Accueil extends StatefulWidget {
+  static const String rootName = '/accueil';
   @override
   _Accueil createState() => _Accueil();
 }
@@ -94,7 +95,6 @@ class _Accueil extends State<Accueil> {
                                 color: Colors.white)),
                         onPressed: () {
                           dialogueProgress.show();
-
                           Future.delayed(Duration(seconds: 5)).then((value) =>
                               dialogueProgress.hide().whenComplete(
                                   () => Navigator.of(context).pushReplacement(
@@ -107,6 +107,7 @@ class _Accueil extends State<Accueil> {
                                                     entreprise: "0001-KMGA",
                                                   )),
                                       )));
+                          FocusScope.of(context).requestFocus(FocusNode());
 
                           // Navigator.of(context).pushAndRemoveUntil(
                           //     MaterialPageRoute(builder: (builder) => MyHomePage()),

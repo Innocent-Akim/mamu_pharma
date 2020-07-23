@@ -10,6 +10,7 @@ import 'package:mamusoft/util/hotel_app_theme.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class DetailStock extends StatefulWidget {
+  static const String rootName = '/detailstock';
   final date, entreprise;
 
   const DetailStock({Key key, this.date, this.entreprise}) : super(key: key);
@@ -35,6 +36,7 @@ class _DetailStock extends State<DetailStock> {
     _blocFiche = BlocFiche();
     _blocFiche
         .add(EventFicheFetch(date: widget.date, entreprise: widget.entreprise));
+
     _scrollController = ScrollController();
   }
 
@@ -128,16 +130,16 @@ class _DetailStock extends State<DetailStock> {
                       if (state is StateFicheInit) {
                         return Center(
                           child: SpinKitCircle(
-                            color: Colors.redAccent,
-                            size: 40,
+                            color: Colors.blueAccent,
+                            size: 30,
                           ),
                         );
                       }
                       if (state is StateFicheLoading) {
                         return Center(
                           child: SpinKitCircle(
-                            color: Colors.redAccent,
-                            size: 40,
+                            color: Colors.blueAccent,
+                            size: 30,
                           ),
                         );
                       }
@@ -149,25 +151,35 @@ class _DetailStock extends State<DetailStock> {
                           physics: ScrollPhysics(),
                           itemCount: state.fiche.length,
                           itemBuilder: (context, index) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                cardDetail(
-                                    designation: Constants.capitalize(
-                                        val: state.fiche[index].designation),
-                                    date: state.fiche[index].date,
-                                    mTotal: state.fiche[index].ptSortie,
-                                    sInitialer: state.fiche[index].qteEntre,
-                                    sDisponiler: state.fiche[index].qteStock,
-                                    sVendus: state.fiche[index].qteSortie,
-                                    onclick: () {
-                                      setState(() {
-                                        visib = !visib;
-                                      });
-                                    },
-                                    count: index),
-                              ],
-                            );
+                            return state.fiche != null
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      cardDetail(
+                                          designation: Constants.capitalize(
+                                              val: state
+                                                  .fiche[index].designation),
+                                          date: state.fiche[index].date,
+                                          mTotal: state.fiche[index].ptSortie,
+                                          sInitialer:
+                                              state.fiche[index].qteEntre,
+                                          sDisponiler:
+                                              state.fiche[index].qteStock,
+                                          sVendus: state.fiche[index].qteSortie,
+                                          onclick: () {
+                                            setState(() {
+                                              visib = !visib;
+                                            });
+                                          },
+                                          count: index),
+                                    ],
+                                  )
+                                : Center(
+                                    child: Material(
+                                        elevation: 1,
+                                        color: Colors.black12,
+                                        child:
+                                            Image.asset("assets/empty.png")));
                           },
                         );
                       }
@@ -329,7 +341,7 @@ class _DetailStock extends State<DetailStock> {
                           border:
                               Border.all(color: Color(0xFF42A5F5), width: 1)),
                       child: Center(
-                        child: Icon(Icons.gavel,
+                        child: Icon(Icons.airplay,
                             size: 12, color: Color(0xFF42A5F5)),
                       ),
                     ),
@@ -340,7 +352,7 @@ class _DetailStock extends State<DetailStock> {
                       "Rapport des ventes",
                       style: TextStyle(
                           color: Color(0xFF42A5F5),
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
                   ],

@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mamusoft/app/bloc/blocOperation/operationBloc.dart';
+import 'package:mamusoft/app/bloc/blocOperation/operationEvent.dart';
+import 'package:mamusoft/app/bloc/blocOperation/operationState.dart';
 import 'package:mamusoft/app/bloc/blocStock/blockStock.dart';
 import 'package:mamusoft/app/bloc/blocStock/eventStock.dart';
 import 'package:mamusoft/app/bloc/blocStock/stateStock.dart';
@@ -15,13 +18,13 @@ import 'package:mamusoft/app/source/data_api_provider.dart';
 import 'package:mamusoft/screens/detailStock.dart';
 import 'package:mamusoft/screens/identite.dart';
 import 'package:mamusoft/util/app_theme.dart';
-import 'package:mamusoft/util/constante.dart';
 import 'package:mamusoft/util/design_course_app_theme.dart';
 import 'package:mamusoft/util/hotel_app_theme.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MyHomePage extends StatefulWidget {
+  static const String rootName = '/myhome';
   final quantite;
   final entreprise;
 
@@ -34,6 +37,8 @@ class _MyHomePage extends State<MyHomePage> {
   ProgressDialog dialogueProgress;
   BlocVente _blocVente;
   BlocStock _blocStock;
+  OperationBloc _operation0;
+  OperationBloc _operation1;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -42,16 +47,22 @@ class _MyHomePage extends State<MyHomePage> {
   int pagaOffset = 0;
   DateTime dateSelect;
   DateTime dateSelec;
-  bool isdate = false;
 
   @override
   void initState() {
     super.initState();
+
     _blocStock = BlocStock();
     _blocVente = BlocVente();
+    _operation0 = OperationBloc();
+    _operation1 = OperationBloc();
     _blocStock.add(EventStockerFetch(entreprise: widget.entreprise));
     _blocVente.add(EventVenteLoaded(
         entreprise: widget.entreprise, limit: perpage.toString()));
+    _operation0.add(OperationEventFetch(
+        date: '2019-05-19', entreprise: widget.entreprise, position: 1));
+    _operation1.add(OperationEventFetch(
+        date: '2019-05-25', entreprise: widget.entreprise, position: 2));
   }
 
   final _identifier = MyIdentite();
@@ -135,6 +146,9 @@ class _MyHomePage extends State<MyHomePage> {
                                                 isSelected: categoryType ==
                                                     CategoryType.bkv,
                                                 onClick: () {
+                                                  FocusScope.of(context)
+                                                      .requestFocus(
+                                                          new FocusScopeNode());
                                                   setState(() {
                                                     isSelectedItm = 0;
                                                     categoryType =
@@ -152,6 +166,9 @@ class _MyHomePage extends State<MyHomePage> {
                                                 isSelected: categoryType ==
                                                     CategoryType.bavi,
                                                 onClick: () {
+                                                  FocusScope.of(context)
+                                                      .requestFocus(
+                                                          new FocusScopeNode());
                                                   setState(() {
                                                     isSelectedItm = 0;
                                                     categoryType =
@@ -170,6 +187,9 @@ class _MyHomePage extends State<MyHomePage> {
                                                     CategoryType.kamitu,
                                                 onClick: () {
                                                   setState(() {
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            new FocusScopeNode());
                                                     isSelectedItm = 0;
                                                     categoryType =
                                                         CategoryType.kamitu;
@@ -265,37 +285,107 @@ class _MyHomePage extends State<MyHomePage> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: <Widget>[
-                                                  customDashbord(
-                                                      icon: FontAwesomeIcons
-                                                          .angleDoubleDown,
-                                                      color: Color(0xFFB8F1FF),
-                                                      nombre: '210',
-                                                      name: 'Entrées'),
-                                                  customDashbord(
-                                                      color: Color(0xFFEBBB9C),
-                                                      icon: Icons.save_alt,
-                                                      name: 'Sorties',
-                                                      nombre: '5400',
-                                                      onTap: () {
-                                                        showCupertinoModalPopup(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                                    context) {
-                                                              return SafeArea(
-                                                                maintainBottomViewPadding:
-                                                                    true,
-                                                                child: Scaffold(
-                                                                    body:
-                                                                        Container(
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                        "DATA"),
-                                                                  ),
-                                                                )),
-                                                              );
+                                                  BlocBuilder(
+                                                    bloc: _operation1,
+                                                    builder: (context, state) {
+                                                      if (state
+                                                          is OperationStateInit) {
+                                                        return Center(
+                                                          child: SpinKitCircle(
+                                                            size: 12,
+                                                            color: Colors.blue,
+                                                          ),
+                                                        );
+                                                      }
+                                                      if (state
+                                                          is OperationStateLoading) {
+                                                        return Center(
+                                                          child: SpinKitCircle(
+                                                            size: 12,
+                                                            color: Colors.blue,
+                                                          ),
+                                                        );
+                                                      }
+                                                      if (state
+                                                          is OperationStateLoaded) {
+                                                        return customDashbord(
+                                                            icon: FontAwesomeIcons
+                                                                .angleDoubleDown,
+                                                            color: Color(
+                                                                0xFFB8F1FF),
+                                                            nombre: state
+                                                                        .operation !=
+                                                                    null
+                                                                ? "${state.operation[0].nobre}"
+                                                                : "0.00",
+                                                            name: state.operation !=
+                                                                    null
+                                                                ? 'Entrées'
+                                                                : "Date invalider");
+                                                      }
+                                                    },
+                                                  ),
+                                                  BlocBuilder(
+                                                    bloc: _operation0,
+                                                    builder: (context, state) {
+                                                      if (state
+                                                          is OperationStateInit) {
+                                                        return Center(
+                                                          child: SpinKitCircle(
+                                                            size: 12,
+                                                            color: Colors.blue,
+                                                          ),
+                                                        );
+                                                      }
+                                                      if (state
+                                                          is OperationStateLoading) {
+                                                        return Center(
+                                                          child: SpinKitCircle(
+                                                            size: 12,
+                                                            color: Colors.blue,
+                                                          ),
+                                                        );
+                                                      }
+                                                      if (state
+                                                          is OperationStateLoaded) {
+                                                        return customDashbord(
+                                                            color: Color(
+                                                                0xFFEBBB9C),
+                                                            icon:
+                                                                Icons.save_alt,
+                                                            name: state.operation !=
+                                                                    null
+                                                                ? 'Sorties'
+                                                                : "Date invalite",
+                                                            nombre: state
+                                                                        .operation !=
+                                                                    null
+                                                                ? "${state.operation[0].nobre}"
+                                                                : "0.00",
+                                                            onTap: () {
+                                                              showCupertinoModalPopup(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return SafeArea(
+                                                                      maintainBottomViewPadding:
+                                                                          true,
+                                                                      child: Scaffold(
+                                                                          body: Container(
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              Text("DATA"),
+                                                                        ),
+                                                                      )),
+                                                                    );
+                                                                  });
                                                             });
-                                                      }),
+                                                      }
+                                                    },
+                                                  ),
                                                 ],
                                               ),
                                               SizedBox(child: Text("")),
@@ -328,11 +418,8 @@ class _MyHomePage extends State<MyHomePage> {
                                                       }
                                                       if (state
                                                           is StateStockerFetch) {
-                                                        return state
-                                                                    .data[0]
-                                                                    .quantite
-                                                                    .length >
-                                                                0
+                                                        return state.data !=
+                                                                null
                                                             ? customDashbord(
                                                                 icon: Icons
                                                                     .collections_bookmark,
@@ -1154,7 +1241,16 @@ class _MyHomePage extends State<MyHomePage> {
                                 FlatButton(
                                     onPressed: () {
                                       setState(() {
-                                        isdate = !isdate;
+                                        _operation0.add(OperationEventFetch(
+                                            date:
+                                                "${dateSelect.toString().substring(0, 10)}",
+                                            entreprise: widget.entreprise,
+                                            position: 1));
+                                        _operation1.add(OperationEventFetch(
+                                            date:
+                                                "${dateSelect.toString().substring(0, 10)}",
+                                            entreprise: widget.entreprise,
+                                            position: 2));
                                       });
                                       Navigator.of(context).pop();
                                     },
@@ -1513,14 +1609,15 @@ class _MyHomePage extends State<MyHomePage> {
     return CupertinoDatePicker(
       initialDateTime: DateTime.now(),
       mode: CupertinoDatePickerMode.date,
-      use24hFormat: true,
+      maximumYear: DateTime.now().year,
+      minimumYear: DateTime.now().year - 10,
+      key: Key(""),
+      use24hFormat: false,
       backgroundColor: Color(0xFFFFFFFF),
       onDateTimeChanged: (val) {
         setState(() {
           dateSelect = val;
         });
-
-        print(dateSelect);
       },
     );
   }

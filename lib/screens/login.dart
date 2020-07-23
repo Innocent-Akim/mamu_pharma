@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyLogin extends StatefulWidget {
+  static const String rootName = '/login';
   @override
   _MyLogin createState() => _MyLogin();
 }

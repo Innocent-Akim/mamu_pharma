@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamusoft/screens/accueil.dart';
 import 'package:mamusoft/gui/alert_internet.dart';
+import 'package:mamusoft/screens/login.dart';
 import 'package:mamusoft/util/constante.dart';
 
 Future<void> main() async {
@@ -24,7 +25,7 @@ class _MyMain extends State<MyMain> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xFF42A5F5),
+      statusBarColor: Color(0XFF022e57),
       statusBarIconBrightness: Brightness.dark,
       statusBarBrightness:
           Platform.isAndroid ? Brightness.dark : Brightness.light,
@@ -36,9 +37,11 @@ class _MyMain extends State<MyMain> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Color(0XFF022e57),
+        scaffoldBackgroundColor: Colors.white,
         // platform: TargetPlatform.iOS,
       ),
+      routes: {MyLogin.rootName: (_) => MyMain()},
       home: Accueil(),
     );
   }
