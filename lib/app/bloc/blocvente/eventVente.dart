@@ -11,7 +11,9 @@ class EventVenteLoading extends EventVente {
 class EventVenteLoaded extends EventVente {
   final entreprise;
   final limit;
-  EventVenteLoaded({@required this.entreprise, @required this.limit});
+  final limitdb;
+  EventVenteLoaded(
+      {@required this.entreprise, @required this.limit, this.limitdb});
   @override
   List<Object> get props => [];
 }

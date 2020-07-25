@@ -45,10 +45,11 @@ dependencies:
   fancy_bottom_navigation: ^0.3.2
   # url_launcher_web: ^0.1.1+6
   loading_gifs: ^0.2.2
-  flutter_spinkit: ^2.1.0
+  flutter_spinkit: ^4.1.2+1
   device_info: ^0.4.2+4
   shared_preferences: ^0.5.6+2
   data_connection_checker: ^0.3.4
+  residemenu: ^1.3.7
   # connectivity: ^0.4.9 
   shimmer: ^1.1.1
   # flutter_skeleton: ^0.1.0+1

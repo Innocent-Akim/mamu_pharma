@@ -13,8 +13,11 @@ class BlocVente extends Bloc<EventVente, StateVente> {
     if (event is EventVenteLoaded) {
       yield StateVenteLoading();
 
-      List<ModelVente> vente = await Repository.getInstance()
-          .fetchVente(entreprise: event.entreprise, limit: event.limit);
+      List<ModelVente> vente = await Repository.getInstance().fetchVente(
+          entreprise: event.entreprise,
+          limit: event.limit,
+          limitdb: event.limitdb);
+      print(event.limit);
 
       yield StateVenteFetch(data: vente);
     }

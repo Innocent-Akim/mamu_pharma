@@ -36,6 +36,11 @@ class _DetailStock extends State<DetailStock> {
     _blocFiche = BlocFiche();
     _blocFiche
         .add(EventFicheFetch(date: widget.date, entreprise: widget.entreprise));
+    _refreshController.headerMode.addListener(() {
+      if (_refreshController.headerMode.value == RefreshStatus.idle) {
+        Future.delayed(Duration(milliseconds: 20)).then((value) {});
+      }
+    });
 
     _scrollController = ScrollController();
   }
@@ -116,13 +121,38 @@ class _DetailStock extends State<DetailStock> {
                 child: SmartRefresher(
                   scrollController: _scrollController,
                   enablePullDown: true,
-                  enablePullUp: false,
+                  enablePullUp: true,
+                  footer: CustomFooter(
+                      builder: (BuildContext context, LoadStatus mode) {
+                    Widget body;
+                    if (mode == LoadStatus.idle) {
+                      body = Text("Chargement encours...");
+                    } else if (mode == LoadStatus.loading) {
+                      body = SpinKitCircle(
+                        color: Colors.blue,
+                        size: 20,
+                      );
+                    } else if (mode == LoadStatus.failed) {
+                      body = Text("Chargement echouer! essayer encord");
+                    } else if (mode == LoadStatus.canLoading) {
+                      body = Text("release to load more");
+                    } else {
+                      body = Text("No more Data");
+                    }
+                    return Container(
+                      height: 30.0,
+                      child: Center(child: body),
+                    );
+                  }),
+                  header: MaterialClassicHeader(),
                   controller: _refreshController,
                   onRefresh: () async {
                     await Future.delayed(Duration(microseconds: 1000));
+
                     _blocFiche.add(EventFicheFetch(
                         date: widget.date, entreprise: widget.entreprise));
-                    _refreshController.refreshCompleted();
+                    if (mounted) setState(() {});
+                    _refreshController.refreshFailed();
                   },
                   child: BlocBuilder(
                     bloc: _blocFiche,
@@ -185,6 +215,11 @@ class _DetailStock extends State<DetailStock> {
                       }
                     },
                   ),
+                  onLoading: () {
+                    Future.delayed(Duration(milliseconds: 1000)).then((value) {
+                      _refreshController.loadComplete();
+                    });
+                  },
                 ),
               )
             ],

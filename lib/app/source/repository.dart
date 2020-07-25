@@ -14,9 +14,10 @@ class Repository {
     return _instance;
   }
 
-  Future<List<ModelVente>> fetchVente({String entreprise, String limit}) =>
+  Future<List<ModelVente>> fetchVente(
+          {String entreprise, String limit, String limitdb}) =>
       Dataprovider.getInstance()
-          .fetchVente(entreprise: entreprise, limit: limit);
+          .fetchVente(entreprise: entreprise, limit: limit, limitdb: limitdb);
 
   Future<List<ModelStock>> getQte({String entreprise}) =>
       Dataprovider.getInstance().sumQuantite(entreprise: entreprise);

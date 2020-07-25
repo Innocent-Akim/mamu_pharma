@@ -14,7 +14,9 @@ import 'package:mamusoft/app/bloc/blocStock/stateStock.dart';
 import 'package:mamusoft/app/bloc/blocvente/blocVente.dart';
 import 'package:mamusoft/app/bloc/blocvente/eventVente.dart';
 import 'package:mamusoft/app/bloc/blocvente/stateVente.dart';
+import 'package:mamusoft/app/model/venteModel.dart';
 import 'package:mamusoft/app/source/data_api_provider.dart';
+import 'package:mamusoft/app/source/repository.dart';
 import 'package:mamusoft/screens/detailStock.dart';
 import 'package:mamusoft/screens/identite.dart';
 import 'package:mamusoft/util/app_theme.dart';
@@ -58,7 +60,7 @@ class _MyHomePage extends State<MyHomePage> {
     _operation1 = OperationBloc();
     _blocStock.add(EventStockerFetch(entreprise: widget.entreprise));
     _blocVente.add(EventVenteLoaded(
-        entreprise: widget.entreprise, limit: perpage.toString()));
+        entreprise: widget.entreprise, limit: (10).toString(), limitdb: '10'));
     _operation0.add(OperationEventFetch(
         date: '2019-05-19', entreprise: widget.entreprise, position: 1));
     _operation1.add(OperationEventFetch(
@@ -239,7 +241,8 @@ class _MyHomePage extends State<MyHomePage> {
                                                 Duration(microseconds: 1000));
                                             _blocVente.add(EventVenteLoaded(
                                                 entreprise: widget.entreprise,
-                                                limit: '10'));
+                                                limit: '10',
+                                                limitdb: '10'));
                                             _refreshController
                                                 .refreshCompleted();
                                           },
@@ -628,99 +631,175 @@ class _MyHomePage extends State<MyHomePage> {
                                           ),
                                         )
                                       : isSelectedItm == 1
-                                          ? SmartRefresher(
-                                              scrollController:
-                                                  _scrollControlle,
-                                              enablePullDown: true,
-                                              enablePullUp: true,
-                                              controller: _refreshController,
-                                              onRefresh: () async {
-                                                await Future.delayed(Duration(
-                                                    microseconds: 1000));
-                                                _blocVente.add(EventVenteLoaded(
-                                                    entreprise: "0001-KMGA",
-                                                    limit: '5'));
-
-                                                _refreshController
-                                                    .refreshCompleted();
-                                              },
-                                              child:
-                                                  Dataprovider.isERROR == true
+                                          ? BlocBuilder(
+                                              bloc: _blocVente,
+                                              builder: (context, state) {
+                                                if (state is StateVenteInit) {
+                                                  return Center(
+                                                    child: SpinKitCircle(
+                                                      color: Colors.lightBlue,
+                                                      size: 40,
+                                                    ),
+                                                  );
+                                                }
+                                                if (state
+                                                    is StateVenteLoading) {
+                                                  return Center(
+                                                    child: SpinKitCircle(
+                                                      color: Colors.lightBlue,
+                                                      size: 40,
+                                                    ),
+                                                  );
+                                                }
+                                                if (state is StateVenteFetch) {
+                                                  return state.data.length == 0
                                                       ? Center(
                                                           child: Image.asset(
-                                                            "assets/error.png",
-                                                            height: 80,
+                                                            "assets/new vide.png",
                                                           ),
                                                         )
-                                                      : BlocBuilder(
-                                                          bloc: _blocVente,
-                                                          builder:
-                                                              (context, state) {
-                                                            if (state
-                                                                is StateVenteInit) {
-                                                              return Center(
-                                                                child:
-                                                                    SpinKitCircle(
-                                                                  color: Colors
-                                                                      .lightBlue,
-                                                                  size: 50,
-                                                                ),
+                                                      : SmartRefresher(
+                                                          scrollController:
+                                                              _scrollControlle,
+                                                          enablePullDown: true,
+                                                          enablePullUp: true,
+                                                          footer: CustomFooter(
+                                                              builder:
+                                                                  (BuildContext
+                                                                          context,
+                                                                      LoadStatus
+                                                                          mode) {
+                                                            Widget body;
+                                                            if (mode ==
+                                                                LoadStatus
+                                                                    .idle) {
+                                                              body = Text(
+                                                                  "Chargement encours...");
+                                                            } else if (mode ==
+                                                                LoadStatus
+                                                                    .loading) {
+                                                              body =
+                                                                  SpinKitCircle(
+                                                                color:
+                                                                    Colors.blue,
+                                                                size: 20,
                                                               );
+                                                            } else if (mode ==
+                                                                LoadStatus
+                                                                    .failed) {
+                                                              body = Text(
+                                                                  "Chargement echouer! essayer encord");
+                                                            } else if (mode ==
+                                                                LoadStatus
+                                                                    .canLoading) {
+                                                              body = Text(
+                                                                  "release to load more");
+                                                            } else {
+                                                              body = Text(
+                                                                  "No more Data");
                                                             }
-                                                            if (state
-                                                                is StateVenteLoading) {
-                                                              return Center(
-                                                                child:
-                                                                    SpinKitCircle(
+                                                            return Container(
+                                                              height: 50.0,
+                                                              child: Center(
+                                                                  child: body),
+                                                            );
+                                                          }),
+                                                          header:
+                                                              MaterialClassicHeader(
                                                                   color: Colors
-                                                                      .lightBlue,
-                                                                  size: 50,
-                                                                ),
-                                                              );
-                                                            }
-                                                            if (state
-                                                                is StateVenteFetch) {
-                                                              return state.data
-                                                                          .length ==
-                                                                      0
-                                                                  ? Center(
-                                                                      child: Image
-                                                                          .asset(
-                                                                        "assets/new vide.png",
-                                                                      ),
-                                                                    )
-                                                                  : ListView
-                                                                      .builder(
-                                                                      physics:
-                                                                          ScrollPhysics(),
-                                                                      itemCount: state
-                                                                          .data
-                                                                          .length,
-                                                                      itemBuilder:
-                                                                          (context,
-                                                                              index) {
-                                                                        return Padding(
-                                                                          padding: const EdgeInsets.only(
-                                                                              top: 4.0,
-                                                                              bottom: 4.0),
-                                                                          child: getDetail(
-                                                                              onClick: () {
-                                                                                print("${state.data[index].montant}");
-                                                                              },
-                                                                              ico: Icons.vertical_align_bottom,
-                                                                              montant: '${state.data[index].montant}',
-                                                                              payer: '${state.data[index].apayer}',
-                                                                              devise: 'USD',
-                                                                              dette: '${state.data[index].dette}',
-                                                                              date: '${state.data[index].date}',
-                                                                              color: Colors.red,
-                                                                              colo: Colors.redAccent),
-                                                                        );
-                                                                      },
-                                                                    );
-                                                            }
+                                                                      .blueAccent),
+                                                          controller:
+                                                              _refreshController,
+                                                          onRefresh: () async {
+                                                            await Future.delayed(
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        1000));
+
+                                                            _blocVente.add(
+                                                                EventVenteLoaded(
+                                                                    entreprise:
+                                                                        widget
+                                                                            .entreprise,
+                                                                    limit: (10)
+                                                                        .toString(),
+                                                                    limitdb:
+                                                                        '10'));
+                                                            _refreshController
+                                                                .refreshCompleted();
                                                           },
-                                                        ),
+                                                          onLoading: () async {
+                                                            await Future.delayed(
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        1000));
+
+                                                            _blocVente.add(EventVenteLoaded(
+                                                                entreprise: widget
+                                                                    .entreprise,
+                                                                limit: (state
+                                                                            .data
+                                                                            .length +
+                                                                        10 +
+                                                                        10)
+                                                                    .toString(),
+                                                                limitdb: '10'));
+                                                            if (mounted)
+                                                              setState(() {});
+                                                            _refreshController
+                                                                .loadComplete();
+                                                          },
+                                                          // () async {
+                                                          //   await Future.delayed(
+                                                          //       Duration(
+                                                          //           microseconds:
+                                                          //               1000));
+                                                          //   _blocVente.add(
+                                                          //       EventVenteLoaded(
+                                                          //           entreprise:
+                                                          //               "0001-KMGA",
+                                                          //           limit:
+                                                          //               '5'));
+
+                                                          //   _refreshController
+                                                          //       .refreshCompleted();
+                                                          // },
+                                                          child:
+                                                              ListView.builder(
+                                                            physics:
+                                                                ScrollPhysics(),
+                                                            itemCount: state
+                                                                .data.length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              return Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            4.0,
+                                                                        bottom:
+                                                                            4.0),
+                                                                child: getDetail(
+                                                                    onClick: () {
+                                                                      print(
+                                                                          "${state.data[index].montant}");
+                                                                    },
+                                                                    ico: Icons.vertical_align_bottom,
+                                                                    montant: '${state.data[index].montant}',
+                                                                    payer: '${state.data[index].apayer}',
+                                                                    devise: 'USD',
+                                                                    dette: '${state.data[index].dette}',
+                                                                    date: '${state.data[index].date}',
+                                                                    color: Colors.red,
+                                                                    colo: Colors.redAccent),
+                                                              );
+                                                            },
+                                                          ),
+                                                        );
+                                                }
+                                              },
                                             )
                                           : isSelectedItm == 2
                                               ? GridView.count(
