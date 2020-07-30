@@ -14,9 +14,6 @@ import 'package:mamusoft/app/bloc/blocStock/stateStock.dart';
 import 'package:mamusoft/app/bloc/blocvente/blocVente.dart';
 import 'package:mamusoft/app/bloc/blocvente/eventVente.dart';
 import 'package:mamusoft/app/bloc/blocvente/stateVente.dart';
-import 'package:mamusoft/app/model/venteModel.dart';
-import 'package:mamusoft/app/source/data_api_provider.dart';
-import 'package:mamusoft/app/source/repository.dart';
 import 'package:mamusoft/screens/detailStock.dart';
 import 'package:mamusoft/screens/identite.dart';
 import 'package:mamusoft/util/app_theme.dart';
@@ -45,28 +42,35 @@ class _MyHomePage extends State<MyHomePage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ScrollController _scrollControlle;
-  int perpage = 15;
-  int pagaOffset = 0;
+  int perpage = 0;
+  int pagaOffset = 15;
   DateTime dateSelect;
   DateTime dateSelec;
-
+  int x = 0;
+  int y = 0;
   @override
   void initState() {
     super.initState();
+    init();
+  }
 
+  void init() {
     _blocStock = BlocStock();
     _blocVente = BlocVente();
     _operation0 = OperationBloc();
     _operation1 = OperationBloc();
     _blocStock.add(EventStockerFetch(entreprise: widget.entreprise));
     _blocVente.add(EventVenteLoaded(
-        entreprise: widget.entreprise, limit: (10).toString(), limitdb: '10'));
+        entreprise: widget.entreprise,
+        limit: perpage.toString(),
+        limitdb: pagaOffset.toString()));
     _operation0.add(OperationEventFetch(
         date: '2019-05-19', entreprise: widget.entreprise, position: 1));
     _operation1.add(OperationEventFetch(
         date: '2019-05-25', entreprise: widget.entreprise, position: 2));
   }
 
+  int page = 0;
   final _identifier = MyIdentite();
   CategoryType categoryType = CategoryType.bkv;
   bool isConnexion = false;
@@ -241,8 +245,9 @@ class _MyHomePage extends State<MyHomePage> {
                                                 Duration(microseconds: 1000));
                                             _blocVente.add(EventVenteLoaded(
                                                 entreprise: widget.entreprise,
-                                                limit: '10',
-                                                limitdb: '10'));
+                                                limit: page.toString(),
+                                                limitdb:
+                                                    pagaOffset.toString()));
                                             _refreshController
                                                 .refreshCompleted();
                                           },
@@ -460,7 +465,7 @@ class _MyHomePage extends State<MyHomePage> {
                                                                 nombre:
                                                                     "${0.0}",
                                                                 name:
-                                                                    'Quantite disponibles');
+                                                                    'Produit disponibles');
                                                       }
                                                     },
                                                   ),
@@ -586,7 +591,7 @@ class _MyHomePage extends State<MyHomePage> {
                                                                                 Colors.grey),
                                                                       ),
                                                                       Text(
-                                                                        '22 Dec 2015',
+                                                                        '22 Dec 2020',
                                                                         style: TextStyle(
                                                                             color: Colors
                                                                                 .black,
@@ -652,7 +657,15 @@ class _MyHomePage extends State<MyHomePage> {
                                                   );
                                                 }
                                                 if (state is StateVenteFetch) {
-                                                  return state.data.length == 0
+                                                  if (state.data.length > 0 &&
+                                                      state.data.length <=
+                                                          pagaOffset) {
+                                                    x = state.data.length;
+                                                    y = page;
+                                                  }
+                                                  print(
+                                                      "=========SIZE==========>${x}");
+                                                  return x == 0
                                                       ? Center(
                                                           child: Image.asset(
                                                             "assets/new vide.png",
@@ -694,10 +707,15 @@ class _MyHomePage extends State<MyHomePage> {
                                                                     .canLoading) {
                                                               body = Text(
                                                                   "release to load more");
-                                                            } else {
+                                                            } else if (mode ==
+                                                                LoadStatus
+                                                                    .noMore) {
                                                               body = Text(
                                                                   "No more Data");
                                                             }
+                                                            print(
+                                                                "#####################################");
+                                                            print(state.data);
                                                             return Container(
                                                               height: 50.0,
                                                               child: Center(
@@ -716,15 +734,13 @@ class _MyHomePage extends State<MyHomePage> {
                                                                     milliseconds:
                                                                         1000));
 
-                                                            _blocVente.add(
-                                                                EventVenteLoaded(
-                                                                    entreprise:
-                                                                        widget
-                                                                            .entreprise,
-                                                                    limit: (10)
-                                                                        .toString(),
-                                                                    limitdb:
-                                                                        '10'));
+                                                            _blocVente.add(EventVenteLoaded(
+                                                                entreprise: widget
+                                                                    .entreprise,
+                                                                limit: (page)
+                                                                    .toString(),
+                                                                limitdb: pagaOffset
+                                                                    .toString()));
                                                             _refreshController
                                                                 .refreshCompleted();
                                                           },
@@ -734,36 +750,214 @@ class _MyHomePage extends State<MyHomePage> {
                                                                     milliseconds:
                                                                         1000));
 
-                                                            _blocVente.add(EventVenteLoaded(
-                                                                entreprise: widget
-                                                                    .entreprise,
-                                                                limit: (state
-                                                                            .data
-                                                                            .length +
-                                                                        10 +
-                                                                        10)
-                                                                    .toString(),
-                                                                limitdb: '10'));
+                                                            if (x > 0 &&
+                                                                x <
+                                                                    state.data
+                                                                        .length) {
+                                                              print(
+                                                                  "Fin Pagination  ${y}");
+
+                                                              _blocVente.add(EventVenteLoaded(
+                                                                  entreprise: widget
+                                                                      .entreprise,
+                                                                  limit: (y)
+                                                                      .toString(),
+                                                                  limitdb:
+                                                                      pagaOffset
+                                                                          .toString()));
+                                                            } else {
+                                                              print(
+                                                                  "Encours Pagination");
+                                                              page = page +
+                                                                  (state.data
+                                                                          .length +
+                                                                      perpage);
+                                                              _blocVente.add(EventVentLoadede(
+                                                                  entreprise: widget
+                                                                      .entreprise,
+                                                                  limit: (page)
+                                                                      .toString(),
+                                                                  limitdb:
+                                                                      pagaOffset
+                                                                          .toString()));
+                                                            }
+                                                            print(
+                                                                "Already loaded");
+
                                                             if (mounted)
                                                               setState(() {});
                                                             _refreshController
                                                                 .loadComplete();
                                                           },
-                                                          // () async {
-                                                          //   await Future.delayed(
-                                                          //       Duration(
-                                                          //           microseconds:
-                                                          //               1000));
-                                                          //   _blocVente.add(
-                                                          //       EventVenteLoaded(
-                                                          //           entreprise:
-                                                          //               "0001-KMGA",
-                                                          //           limit:
-                                                          //               '5'));
+                                                          child:
+                                                              ListView.builder(
+                                                            physics:
+                                                                ScrollPhysics(),
+                                                            itemCount: state
+                                                                .data.length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              return Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            4.0,
+                                                                        bottom:
+                                                                            4.0),
+                                                                child: getDetail(
+                                                                    onClick: () {
+                                                                      print(
+                                                                          "${state.data[index].montant}");
+                                                                    },
+                                                                    ico: Icons.vertical_align_bottom,
+                                                                    montant: '${state.data[index].montant}',
+                                                                    payer: '${state.data[index].apayer}',
+                                                                    devise: 'USD',
+                                                                    dette: '${state.data[index].dette}',
+                                                                    date: '${state.data[index].date}',
+                                                                    color: Colors.red,
+                                                                    colo: Colors.redAccent),
+                                                              );
+                                                            },
+                                                          ),
+                                                        );
+                                                }
+                                                if (state
+                                                    is StateVentePagineted) {
+                                                  if (state.data.length > 0 &&
+                                                      state.data.length <=
+                                                          pagaOffset) {
+                                                    x = state.data.length;
+                                                    y = page;
+                                                  }
+                                                  print(
+                                                      "=========SIZE==========>${x}");
+                                                  return x == 0
+                                                      ? Center(
+                                                          child: Image.asset(
+                                                            "assets/new vide.png",
+                                                          ),
+                                                        )
+                                                      : SmartRefresher(
+                                                          scrollController:
+                                                              _scrollControlle,
+                                                          enablePullDown: true,
+                                                          enablePullUp: true,
+                                                          footer: CustomFooter(
+                                                              builder:
+                                                                  (BuildContext
+                                                                          context,
+                                                                      LoadStatus
+                                                                          mode) {
+                                                            Widget body;
+                                                            if (mode ==
+                                                                LoadStatus
+                                                                    .idle) {
+                                                              body = Text(
+                                                                  "Chargement encours...");
+                                                            } else if (mode ==
+                                                                LoadStatus
+                                                                    .loading) {
+                                                              body =
+                                                                  SpinKitCircle(
+                                                                color:
+                                                                    Colors.blue,
+                                                                size: 20,
+                                                              );
+                                                            } else if (mode ==
+                                                                LoadStatus
+                                                                    .failed) {
+                                                              body = Text(
+                                                                  "Chargement echouer! essayer encord");
+                                                            } else if (mode ==
+                                                                LoadStatus
+                                                                    .canLoading) {
+                                                              body = Text(
+                                                                  "release to load more");
+                                                            } else if (mode ==
+                                                                LoadStatus
+                                                                    .noMore) {
+                                                              body = Text(
+                                                                  "No more Data");
+                                                            }
+                                                            print(
+                                                                "#####################################");
+                                                            print(state.data);
+                                                            return Container(
+                                                              height: 50.0,
+                                                              child: Center(
+                                                                  child: body),
+                                                            );
+                                                          }),
+                                                          header:
+                                                              MaterialClassicHeader(
+                                                                  color: Colors
+                                                                      .blueAccent),
+                                                          controller:
+                                                              _refreshController,
+                                                          onRefresh: () async {
+                                                            await Future.delayed(
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        1000));
 
-                                                          //   _refreshController
-                                                          //       .refreshCompleted();
-                                                          // },
+                                                            _blocVente.add(EventVenteLoaded(
+                                                                entreprise: widget
+                                                                    .entreprise,
+                                                                limit: (page)
+                                                                    .toString(),
+                                                                limitdb: pagaOffset
+                                                                    .toString()));
+                                                            _refreshController
+                                                                .refreshCompleted();
+                                                          },
+                                                          onLoading: () async {
+                                                            await Future.delayed(
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        1000));
+
+                                                            if (x > 0 &&
+                                                                x <
+                                                                    state.data
+                                                                        .length) {
+                                                              print(
+                                                                  "Fin Pagination  ${y}");
+
+                                                              _blocVente.add(EventVenteLoaded(
+                                                                  entreprise: widget
+                                                                      .entreprise,
+                                                                  limit: (y)
+                                                                      .toString(),
+                                                                  limitdb:
+                                                                      pagaOffset
+                                                                          .toString()));
+                                                            } else {
+                                                              print(
+                                                                  "Encours Pagination");
+                                                              page = page +
+                                                                  (state.data
+                                                                          .length +
+                                                                      perpage);
+                                                              _blocVente.add(EventVentLoadede(
+                                                                  entreprise: widget
+                                                                      .entreprise,
+                                                                  limit: (page)
+                                                                      .toString(),
+                                                                  limitdb:
+                                                                      pagaOffset
+                                                                          .toString()));
+                                                            }
+                                                            print(
+                                                                "Already loaded");
+
+                                                            if (mounted)
+                                                              setState(() {});
+                                                            _refreshController
+                                                                .loadComplete();
+                                                          },
                                                           child:
                                                               ListView.builder(
                                                             physics:

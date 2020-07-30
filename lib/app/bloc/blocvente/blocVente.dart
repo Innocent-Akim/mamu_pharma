@@ -9,17 +9,24 @@ class BlocVente extends Bloc<EventVente, StateVente> {
   StateVente get initialState => StateVenteInit();
   @override
   Stream<StateVente> mapEventToState(EventVente event) async* {
-    yield StateVenteInit();
     if (event is EventVenteLoaded) {
-      yield StateVenteLoading();
-
+      yield StateVenteInit();
       List<ModelVente> vente = await Repository.getInstance().fetchVente(
           entreprise: event.entreprise,
           limit: event.limit,
           limitdb: event.limitdb);
-      print(event.limit);
-
+      yield StateVenteLoading();
       yield StateVenteFetch(data: vente);
+    }
+    if (event is EventVentLoadede) {
+      // yield StateVenteLoading();
+      List<ModelVente> vente = await Repository.getInstance().fetchVente(
+          entreprise: event.entreprise,
+          limit: event.limit,
+          limitdb: event.limitdb);
+      print("#####################################");
+      print(vente);
+      yield StateVentePagineted(data: vente);
     }
   }
 }

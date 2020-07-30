@@ -10,7 +10,7 @@ class Dataprovider {
   static Dataprovider _instance;
   static bool isERROR = false;
   var resultat;
-  static const path = "http://192.168.1.160:8081/solution/app/home/app.php";
+  static const path = "http://192.168.1.192/solution/app/home/app.php";
   static Dataprovider getInstance() {
     if (_instance == null) {
       _instance = Dataprovider();
@@ -31,7 +31,6 @@ class Dataprovider {
           'limitdb': limitdb,
         },
       );
-      print("====================>  ${reponse.body}");
       resultat = await json.decode(reponse.body);
       for (int index = 0; index < resultat.length; index++) {
         vente.add(ModelVente.fromJson(resultat[index]));
@@ -73,9 +72,7 @@ class Dataprovider {
         fiche.add(ModelRapport.fromJson(resultat[index]));
       }
       return fiche;
-    } catch (_) {
-      print("===========" + _.toString());
-    }
+    } catch (_) {}
     return null;
   }
 
@@ -140,6 +137,7 @@ class Dataprovider {
       'adress': agent.adress,
       'entreprise': agent.entreprise,
     });
+
     resultat = await json.decode(responce.body);
     print(resultat[0]['bool']);
     if (resultat[0]['bool'] == 'OK')

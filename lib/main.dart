@@ -22,7 +22,6 @@ class MyMain extends StatefulWidget {
 
 class _MyMain extends State<MyMain> {
   @override
-  @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0XFF022e57),

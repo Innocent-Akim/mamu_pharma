@@ -35,8 +35,10 @@ class Repository {
           {String entreprise, String date, int position}) =>
       Dataprovider.getInstance().fetchOperation(
           date: date, entreprise: entreprise, position: position);
+
   Future<bool> sendAgent({ModelAgent agent}) =>
       Dataprovider.getInstance().sendAgent(agent);
+
   Future<List<ModelEntreprise>> fetchAngence() =>
       Dataprovider.getInstance().iscombox();
 }

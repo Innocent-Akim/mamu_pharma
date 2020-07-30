@@ -20,3 +20,10 @@ class StateVenteFetch extends StateVente {
   @override
   List<Object> get props => [];
 }
+
+class StateVentePagineted extends StateVente {
+  List<ModelVente> data;
+  StateVentePagineted({this.data});
+  @override
+  List<Object> get props => [];
+}
