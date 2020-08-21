@@ -4,7 +4,7 @@ class ModelStock {
   ModelStock({this.quantite, this.entreprise});
 
   factory ModelStock.fromJson(Map<String, dynamic> json) => _$FromJson(json);
-  Map<String, dynamic> toJson() => _$ToJson(this);
+  Map<String, dynamic> toJson() => _$toJson(this);
 }
 
 ModelStock _$FromJson(Map<String, dynamic> json) {
@@ -13,7 +13,7 @@ ModelStock _$FromJson(Map<String, dynamic> json) {
       entreprise: json['idEntreprise'].toString());
 }
 
-Map<String, dynamic> _$ToJson(ModelStock stock) => <String, dynamic>{
+Map<String, dynamic> _$toJson(ModelStock stock) => <String, dynamic>{
       'quantite': stock.quantite,
       'idEntreprise': stock.entreprise
     };

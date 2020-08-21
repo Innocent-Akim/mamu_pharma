@@ -436,7 +436,7 @@ class _MyHomePage extends State<MyHomePage> {
                                                                 nombre:
                                                                     "${state.data[0].quantite}",
                                                                 name:
-                                                                    'Quantite disponibles',
+                                                                    'Produit disponibles',
                                                                 onTap: () {
                                                                   FocusScope.of(
                                                                           context)
@@ -1497,7 +1497,7 @@ class _MyHomePage extends State<MyHomePage> {
                       Radius.circular(4.0),
                     ),
                     onTap: () {
-                      showDialog(
+                     showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(

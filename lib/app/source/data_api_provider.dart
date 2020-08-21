@@ -10,7 +10,7 @@ class Dataprovider {
   static Dataprovider _instance;
   static bool isERROR = false;
   var resultat;
-  static const path = "http://192.168.1.192/solution/app/home/app.php";
+  static const path = "http://192.168.43.34/solution/app/home/app.php";
   static Dataprovider getInstance() {
     if (_instance == null) {
       _instance = Dataprovider();
@@ -128,22 +128,36 @@ class Dataprovider {
   }
 
   Future<bool> sendAgent(ModelAgent agent) async {
-    // var url = Uri.parse("$path");
-    final responce = await http.post("$path", body: {
-      'action': 'AGENT_ADD',
-      'nom': agent.nom,
-      'tel': agent.tel,
-      'mail': agent.mail,
-      'adress': agent.adress,
-      'entreprise': agent.entreprise,
-    });
-
-    resultat = await json.decode(responce.body);
-    print(resultat[0]['bool']);
-    if (resultat[0]['bool'] == 'OK')
+    var url = Uri.parse("$path");
+    var request = new http.MultipartRequest("POST", url);
+    request.fields['action'] = 'AGENT_ADD';
+    request.fields['nom'] = agent.nom;
+    request.fields['tel'] = agent.tel;
+    request.fields['mail'] = agent.mail;
+    request.fields['adress'] = agent.adress;
+    request.fields['entreprise'] = agent.entreprise;
+    resultat = await request.send();
+    if (resultat.statusCode == 200) {
       return true;
-    else
+    } else {
       return false;
+    }
+
+    // final responce = await http.post("$path", body: {
+    //   'action': 'AGENT_ADD',
+    //   'nom': agent.nom,
+    //   'tel': agent.tel,
+    //   'mail': agent.mail,
+    //   'adress': agent.adress,
+    //   'entreprise': agent.entreprise,
+    // });
+
+    // resultat = await json.decode(responce.body);
+    // print(resultat[0]['bool']);
+    // if (resultat[0]['bool'] == 'OK')
+    //   return true;
+    // else
+    //   return false;
   }
 
   Future<List<ModelEntreprise>> iscombox() async {

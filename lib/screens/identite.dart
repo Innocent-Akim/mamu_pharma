@@ -10,7 +10,7 @@ import 'package:mamusoft/app/model/agent_model.dart';
 
 class MyIdentite {
   ModelAgent agent;
-  bool isbool;
+  bool isbool = true;
   TextEditingController nom = TextEditingController();
   TextEditingController tel = TextEditingController();
   TextEditingController mail = TextEditingController();
